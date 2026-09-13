@@ -114,6 +114,13 @@ export function getRecentTransactions(
     .slice(0, count);
 }
 
+export function getLargestTransactions(
+  transactions: Transaction[],
+  count = 5,
+): Transaction[] {
+  return [...transactions].sort((a, b) => b.amount - a.amount).slice(0, count);
+}
+
 export function generateFamilyInsight(
   summary: FinancialSummary,
   breakdown: CategoryBreakdownItem[],

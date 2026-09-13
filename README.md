@@ -4,7 +4,8 @@ AI-powered personal finance application built with Next.js (App Router) and
 InsForge.
 
 Authentication, transaction CRUD, and the live dashboard are implemented
-against InsForge. The AI assistant is implemented in a later phase.
+against InsForge. A read-only AI assistant (Gemini) answers questions about
+the signed-in user's own transaction data.
 
 ## Getting Started
 
@@ -12,6 +13,7 @@ against InsForge. The AI assistant is implemented in a later phase.
 npm install
 cp .env.example .env.local
 # fill in NEXT_PUBLIC_INSFORGE_URL and NEXT_PUBLIC_INSFORGE_ANON_KEY from your InsForge project
+# fill in GEMINI_API_KEY from https://aistudio.google.com/apikey to enable the assistant
 npm run dev
 ```
 
@@ -42,15 +44,18 @@ src/
       assistant/
     actions/           Server Actions (auth, transactions)
     api/auth/refresh/  InsForge SSR session refresh route
+    api/assistant/     Assistant Route Handler (auth -> context -> Gemini)
     layout.tsx         Root layout
     page.tsx           Redirects "/" to "/dashboard"
   components/
     layout/            Sidebar, mobile topbar, nav links
     dashboard/          Summary cards, category breakdown, recent transactions
     transactions/       Transaction list, form, delete confirmation
+    assistant/           Chat UI and safe Markdown rendering
   lib/
     insforge/           InsForge SSR server client helper
     transactions/       Validation, row mapping, data-access queries
+    assistant/           Bounded context, prompt, Gemini client, rate limit
   proxy.ts              Session refresh + route protection (Next.js 16 proxy)
 migrations/             SQL to apply against the InsForge Postgres database
 ```

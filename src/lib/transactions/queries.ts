@@ -12,7 +12,7 @@ export type QueryError = "not_authenticated" | "query_failed";
 export type MutationError = "not_authenticated" | "invalid_id" | "not_found_or_forbidden" | "write_failed";
 
 export type ListResult =
-  | { ok: true; transactions: Transaction[] }
+  | { ok: true; transactions: Transaction[]; userId: string }
   | { ok: false; error: QueryError };
 
 export type MutationResult =
@@ -40,8 +40,8 @@ async function requireAuthenticatedClient() {
 
 /** Lists the signed-in user's transactions. RLS scopes rows to that user regardless of any filter here. */
 export async function listTransactions(): Promise<ListResult> {
-  const { insforge } = await requireAuthenticatedClient();
-  if (!insforge) {
+  const { insforge, userId } = await requireAuthenticatedClient();
+  if (!insforge || !userId) {
     return { ok: false, error: "not_authenticated" };
   }
 
@@ -56,7 +56,7 @@ export async function listTransactions(): Promise<ListResult> {
     return { ok: false, error: "query_failed" };
   }
 
-  return { ok: true, transactions: ((data ?? []) as TransactionRow[]).map(mapRowToTransaction) };
+  return { ok: true, userId, transactions: ((data ?? []) as TransactionRow[]).map(mapRowToTransaction) };
 }
 
 function toInsertPayload(input: TransactionInput) {
