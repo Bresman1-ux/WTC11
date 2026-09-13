@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NavLinks } from "./nav-links";
+import { signOutAction } from "@/app/actions/auth";
 
 export function Sidebar() {
   return (
@@ -9,12 +10,14 @@ export function Sidebar() {
       </Link>
       <NavLinks />
       <div className="mt-auto">
-        <Link
-          href="/login"
-          className="block rounded-md px-3 py-2 text-sm font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white"
-        >
-          Logout
-        </Link>
+        <form action={signOutAction}>
+          <button
+            type="submit"
+            className="block w-full rounded-md px-3 py-2 text-left text-sm font-medium text-zinc-400 hover:bg-zinc-800 hover:text-white"
+          >
+            Logout
+          </button>
+        </form>
       </div>
     </aside>
   );

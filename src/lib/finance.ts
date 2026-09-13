@@ -12,6 +12,19 @@ export type TransactionCategory =
   | "Investment"
   | "Other";
 
+export const TRANSACTION_CATEGORIES: TransactionCategory[] = [
+  "Food",
+  "Transport",
+  "Shopping",
+  "Bills",
+  "Entertainment",
+  "Health",
+  "Education",
+  "Salary",
+  "Investment",
+  "Other",
+];
+
 export type Transaction = {
   id: string;
   title: string;
@@ -42,6 +55,28 @@ export function computeSummary(transactions: Transaction[]): FinancialSummary {
   const savingsRate = totalIncome > 0 ? (balance / totalIncome) * 100 : 0;
 
   return { totalIncome, totalExpense, balance, savingsRate };
+}
+
+export function isValidISODate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}/.test(value)) return false;
+  const parsed = new Date(value);
+  return !Number.isNaN(parsed.getTime());
+}
+
+export function computeCurrentMonthSummary(
+  transactions: Transaction[],
+  referenceDate: Date = new Date(),
+): FinancialSummary {
+  const year = referenceDate.getFullYear();
+  const month = referenceDate.getMonth();
+
+  const currentMonthTransactions = transactions.filter((t) => {
+    if (!isValidISODate(t.date)) return false;
+    const parsed = new Date(t.date);
+    return parsed.getFullYear() === year && parsed.getMonth() === month;
+  });
+
+  return computeSummary(currentMonthTransactions);
 }
 
 export type CategoryBreakdownItem = {

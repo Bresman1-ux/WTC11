@@ -7,9 +7,13 @@ export function formatIDR(amount: number): string {
 }
 
 export function formatDate(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return "Unknown date";
+  }
   return new Intl.DateTimeFormat("id-ID", {
     day: "2-digit",
     month: "short",
     year: "numeric",
-  }).format(new Date(iso));
+  }).format(date);
 }

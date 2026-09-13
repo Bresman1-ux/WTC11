@@ -3,17 +3,20 @@
 AI-powered personal finance application built with Next.js (App Router) and
 InsForge.
 
-This is the initial project shell: routing, layout, and static UI only.
-Authentication, database access, transaction CRUD, and the AI assistant are
-implemented in later phases.
+Authentication, transaction CRUD, and the live dashboard are implemented
+against InsForge. The AI assistant is implemented in a later phase.
 
 ## Getting Started
 
 ```bash
 npm install
 cp .env.example .env.local
+# fill in NEXT_PUBLIC_INSFORGE_URL and NEXT_PUBLIC_INSFORGE_ANON_KEY from your InsForge project
 npm run dev
 ```
+
+Apply `migrations/0001_transactions.sql` against the InsForge project's
+Postgres database (SQL editor or migration runner) before using transactions.
 
 Open [http://localhost:3000](http://localhost:3000).
 
@@ -37,10 +40,19 @@ src/
       dashboard/
       transactions/
       assistant/
+    actions/           Server Actions (auth, transactions)
+    api/auth/refresh/  InsForge SSR session refresh route
     layout.tsx         Root layout
     page.tsx           Redirects "/" to "/dashboard"
   components/
     layout/            Sidebar, mobile topbar, nav links
+    dashboard/          Summary cards, category breakdown, recent transactions
+    transactions/       Transaction list, form, delete confirmation
+  lib/
+    insforge/           InsForge SSR server client helper
+    transactions/       Validation, row mapping, data-access queries
+  proxy.ts              Session refresh + route protection (Next.js 16 proxy)
+migrations/             SQL to apply against the InsForge Postgres database
 ```
 
 Route groups `(auth)` and `(dashboard)` organize layouts without affecting
